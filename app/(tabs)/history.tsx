@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } 
 import { useFocusEffect } from 'expo-router';
 import { Calendar, TrendingUp, CheckCircle, XCircle, Pill } from 'lucide-react-native';
 import { useFirebaseAuth } from '@/contexts/FirebaseAuthContext';
-import { HistoryService } from '@/services/firebaseService';
+// import { HistoryService } from '@/services/firebaseService';
+import { MockHistoryService as HistoryService } from '@/services/mockDataService';
 import { History } from '@/types/database';
 import { HistoryItem } from '@/components/HistoryItem';
 import { StatCard } from '@/components/ui/StatCard';
@@ -25,10 +26,11 @@ export default function HistoryScreen() {
   );
 
   const loadHistory = async () => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
-      const data = await HistoryService.getHistory(user.uid, 100);
+      const data = await HistoryService.getHistory(userId, 100);
       setHistory(data);
     } catch (error) {
       console.error('Error loading history:', error);

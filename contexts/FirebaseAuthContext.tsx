@@ -39,21 +39,32 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // TEMPORARY: Mock user for testing (bypassing Firebase Auth)
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      
-      if (firebaseUser) {
-        await loadUserProfile(firebaseUser.uid);
-      } else {
-        setProfile(null);
-      }
-      
+    // Simulate loading delay
+    const timer = setTimeout(() => {
       setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, []);
+
+  // ORIGINAL CODE (commented out for testing)
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+  //     setUser(firebaseUser);
+  //     
+  //     if (firebaseUser) {
+  //       await loadUserProfile(firebaseUser.uid);
+  //     } else {
+  //       setProfile(null);
+  //     }
+  //     
+  //     setLoading(false);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
 
   const loadUserProfile = async (userId: string) => {
     try {
@@ -72,31 +83,52 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      // Create user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const newUser = userCredential.user;
+      // TEMPORARY: Mock sign up bypass
+      const mockUser = {
+        uid: 'test-user-123',
+        email: email || 'test@carebuddy.com',
+        displayName: name,
+      } as User;
 
-      // Update display name
-      await firebaseUpdateProfile(newUser, { displayName: name });
-
-      // Create user profile in Firestore
-      const userProfile: UserProfile = {
-        id: newUser.uid,
-        email: newUser.email!,
+      const mockProfile: UserProfile = {
+        id: 'test-user-123',
+        email: email || 'test@carebuddy.com',
         name,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         createdAt: new Date().toISOString(),
       };
 
-      await setDoc(doc(db, 'profiles', newUser.uid), userProfile);
-
-      // Send verification email
-      await sendEmailVerification(newUser);
-
-      // Load the profile
-      await loadUserProfile(newUser.uid);
+      setUser(mockUser);
+      setProfile(mockProfile);
 
       return { error: null };
+
+      // ORIGINAL CODE (commented out for testing)
+      // // Create user with email and password
+      // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // const newUser = userCredential.user;
+
+      // // Update display name
+      // await firebaseUpdateProfile(newUser, { displayName: name });
+
+      // // Create user profile in Firestore
+      // const userProfile: UserProfile = {
+      //   id: newUser.uid,
+      //   email: newUser.email!,
+      //   name,
+      //   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      //   createdAt: new Date().toISOString(),
+      // };
+
+      // await setDoc(doc(db, 'profiles', newUser.uid), userProfile);
+
+      // // Send verification email
+      // await sendEmailVerification(newUser);
+
+      // // Load the profile
+      // await loadUserProfile(newUser.uid);
+
+      // return { error: null };
     } catch (error: any) {
       console.error('Sign up error:', error);
       return { error };
@@ -105,8 +137,29 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
 
   const signIn = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // TEMPORARY: Mock authentication bypass
+      const mockUser = {
+        uid: 'test-user-123',
+        email: email || 'test@carebuddy.com',
+        displayName: 'Test User',
+      } as User;
+
+      const mockProfile: UserProfile = {
+        id: 'test-user-123',
+        email: email || 'test@carebuddy.com',
+        name: 'Test User',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        createdAt: new Date().toISOString(),
+      };
+
+      setUser(mockUser);
+      setProfile(mockProfile);
+
       return { error: null };
+
+      // ORIGINAL CODE (commented out for testing)
+      // await signInWithEmailAndPassword(auth, email, password);
+      // return { error: null };
     } catch (error: any) {
       console.error('Sign in error:', error);
       return { error };
@@ -115,8 +168,13 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      // TEMPORARY: Mock sign out
+      setUser(null);
       setProfile(null);
+
+      // ORIGINAL CODE (commented out for testing)
+      // await firebaseSignOut(auth);
+      // setProfile(null);
     } catch (error) {
       console.error('Sign out error:', error);
     }

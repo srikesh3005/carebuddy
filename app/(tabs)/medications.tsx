@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, Pla
 import { useFocusEffect, router } from 'expo-router';
 import { Plus, X, Trash2, Clock, Pill, Edit2, ChevronRight } from 'lucide-react-native';
 import { useFirebaseAuth } from '@/contexts/FirebaseAuthContext';
-import { MedicationService } from '@/services/firebaseService';
+// import { MedicationService } from '@/services/firebaseService';
+import { MockMedicationService as MedicationService } from '@/services/mockDataService';
 import { Medication, MedicationForm, Schedule } from '@/types/database';
 import { MedicationCard } from '@/components/MedicationCard';
 import { NotificationService } from '@/services/notificationService';
@@ -36,13 +37,14 @@ export default function Medications() {
   );
 
   const loadMedications = async () => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
       console.log('[Load] Starting medications load...');
       const startTime = Date.now();
       
-      const data = await MedicationService.getMedications(user.uid);
+      const data = await MedicationService.getMedications(userId);
       console.log(`[Load] Loaded ${data.length} medications in ${Date.now() - startTime}ms`);
       
       setMedications(data);
@@ -91,7 +93,8 @@ export default function Medications() {
   };
 
   const saveMedication = async () => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     if (!name || !dose || schedules.length === 0) {
       Alert.alert('Error', 'Please fill in all required fields');
@@ -118,8 +121,8 @@ export default function Medications() {
           });
         }
       } else {
-        const medicationId = await MedicationService.createMedication(user.uid, {
-          user_id: user.uid,
+        const medicationId = await MedicationService.createMedication(userId, {
+          user_id: userId,
           name,
           dose,
           form,

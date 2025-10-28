@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, A
 import { useFocusEffect, router } from 'expo-router';
 import { Bell, Pill, CheckCircle, XCircle, Clock } from 'lucide-react-native';
 import { useFirebaseAuth } from '@/contexts/FirebaseAuthContext';
-import { MedicationService, HistoryService } from '@/services/firebaseService';
+// import { MedicationService, HistoryService } from '@/services/firebaseService';
+import { MockMedicationService as MedicationService, MockHistoryService as HistoryService } from '@/services/mockDataService';
 import { ScheduledDose, Medication } from '@/types/database';
 import { DoseCard } from '@/components/DoseCard';
 import { StatCard } from '@/components/ui/StatCard';
@@ -39,10 +40,11 @@ export default function Home() {
   };
 
   const loadTodaysDoses = async () => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
-      const medications = await MedicationService.getMedications(user.uid);
+      const medications = await MedicationService.getMedications(userId);
 
       const today = new Date();
       const todayDayOfWeek = today.getDay();
@@ -61,7 +63,7 @@ export default function Home() {
           scheduledTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
           // Check history for this dose
-          const history = await HistoryService.getHistory(user.uid, 100);
+          const history = await HistoryService.getHistory(userId, 100);
           const historyForDose = history.find(h => 
             h.medication_id === medication.id &&
             h.scheduled_time >= `${todayDateString}T${schedule.time}` &&
@@ -90,7 +92,8 @@ export default function Home() {
   };
 
   const handleTaken = async (dose: ScheduledDose) => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
       // Optimistically update UI immediately
@@ -101,7 +104,7 @@ export default function Home() {
       ));
 
       // Then save to database in background
-      await HistoryService.addHistoryEntry(user.uid, {
+      await HistoryService.addHistoryEntry(userId, {
         medication_id: dose.medication.id,
         status: 'taken',
         scheduled_time: dose.scheduledTime.toISOString(),
@@ -126,7 +129,8 @@ export default function Home() {
   };
 
   const handleMissed = async (dose: ScheduledDose) => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
       // Optimistically update UI immediately
@@ -137,7 +141,7 @@ export default function Home() {
       ));
 
       // Then save to database in background
-      await HistoryService.addHistoryEntry(user.uid, {
+      await HistoryService.addHistoryEntry(userId, {
         medication_id: dose.medication.id,
         status: 'missed',
         scheduled_time: dose.scheduledTime.toISOString(),
@@ -152,7 +156,8 @@ export default function Home() {
   };
 
   const handleSnooze = async (dose: ScheduledDose, minutes: number) => {
-    if (!user) return;
+    // Use mock user ID if no user is logged in
+    const userId = user?.uid || 'mock_user';
 
     try {
       // Optimistically update UI immediately
@@ -163,7 +168,7 @@ export default function Home() {
       ));
 
       // Then save to database in background
-      await HistoryService.addHistoryEntry(user.uid, {
+      await HistoryService.addHistoryEntry(userId, {
         medication_id: dose.medication.id,
         status: 'snoozed',
         scheduled_time: dose.scheduledTime.toISOString(),
