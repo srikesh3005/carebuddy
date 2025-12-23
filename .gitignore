@@ -30,6 +30,39 @@ yarn-error.*
 # local env files
 .env*.local
 .env
+.env.local
 
 # typescript
 *.tsbuildinfo
+
+# Android/Gradle
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# iOS
+ios/build/
+ios/Pods/
+*.xcworkspace
+*.xcuserstate
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+tmp/
+temp/

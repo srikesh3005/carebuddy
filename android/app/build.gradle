@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.dosecare.app'
+    namespace 'com.carebuddy.app'
     defaultConfig {
-        applicationId 'com.dosecare.app'
+        applicationId 'com.carebuddy.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

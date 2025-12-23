@@ -1,4 +1,4 @@
-package com.dosecare.app
+package com.carebuddy.app
 
 import android.app.Application
 import android.content.res.Configuration

@@ -1,4 +1,4 @@
-package com.dosecare.app
+package com.carebuddy.app
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

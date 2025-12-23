@@ -168,13 +168,11 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
 
   const signOut = async () => {
     try {
-      // TEMPORARY: Mock sign out
+
       setUser(null);
       setProfile(null);
 
-      // ORIGINAL CODE (commented out for testing)
-      // await firebaseSignOut(auth);
-      // setProfile(null);
+     
     } catch (error) {
       console.error('Sign out error:', error);
     }
